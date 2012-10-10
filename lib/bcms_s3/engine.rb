@@ -8,7 +8,9 @@ module BcmsS3
 		include Cms::Module
 		
     config.before_configuration do
-      config.cms.attachments.s3_credentials = "#{Rails.root}/config/s3.yml"
+      # Force ERB processing of YML file and look up credentials using 
+      # rails environment name as hash key
+      config.cms.attachments.s3_credentials = YAML.load(ERB.new(File.read("#{Rails.root}/config/bcms_s3.yml")).result)[Rails.env]
       config.cms.attachments.storage = :s3 
     end
     
