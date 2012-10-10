@@ -19,7 +19,7 @@ And the following to your gem file
 	
 	gem "bcms_aws_s3"
 
-Create a config/s3.yml with your credentials (see below). All files uploaded to the CMS will not be pushed and stored on Amazon s3.
+Create a config/bcms_s3.yml with your credentials (see below). All files uploaded to the CMS will not be pushed and stored on Amazon s3.
 
 ## Using S3 for file storage
 
@@ -27,7 +27,7 @@ Adding this gem to your project will automatically configure the CMS to use AWS 
 
     config.cms.attachments.storage = :filesystem	# This gems sets this value to :s3 when required.
 
-Create a config/s3.yml file that contains your credentials and bucket. This should be in the following format:
+Create a config/bcms_s3.yml file that contains your credentials and bucket. This should be in the following format:
 
     access_key_id: your AWS access key
     secret_access_key: your AWS secret access key
@@ -37,7 +37,7 @@ Create a config/s3.yml file that contains your credentials and bucket. This shou
 
 Before you can upload files, you will need to create an S3 bucket (one or more) and configure that. You can configure in either:
 	
-	# config/s3.yml 
+	# config/bcms_s3.yml 
 	bucket: your_project_bucket_name
 
 Which will use the same bucket in development, testing and production. Or in an environment file (if you want buckets for each environment)
@@ -59,17 +59,22 @@ Which will use the same bucket in development, testing and production. Or in an 
 
 If using this module in conjunction with deployment on heroku you should probably turning heroku caching on by setting Cms::S3.heroku_caching in config/initializers/browsercms.rb to true.
 
-In order to avoid putting your secret AWS key in the s3.yml file, you can take advantage of [heroku's config vars](http://docs.heroku.com/config-vars). Use ERB to read the values from the environment.  This way you can safely commit your s3.yml file to the repository without revealing your amazon credentials.
+In order to avoid putting your secret AWS key in the bcms_s3.yml file, you can take advantage of [heroku's config vars](http://docs.heroku.com/config-vars). Use ERB to read the values from the environment.  This way you can safely commit your bcms_s3.yml file to the repository without revealing your amazon credentials.
 
-    access_key_id: <%= ENV['s3_access_key_id'] %>
-    secret_access_key: <%= ENV['s3_secret_access_key'] %>
-    bucket: <%= ENV['s3_bucket'] %>
+	development:
+	  access_key_id:  hardcoded_key
+	  secret_access_key:  hardcoded_key
+	  bucket:  hardcoded_bucket_name
 
-For developing on your local machine, export the s3 variables to your environment.
+	staging:
+	  access_key_id:  <%= ENV['s3_access_key_id'] %>
+	  secret_access_key:  <%= ENV['s3_secret_access_key'] %>
+	  bucket: <%= ENV['s3_bucket'] %>
 
-    export s3_access_key_id='your AWS access key'
-    export s3_secret_access_key='your AWS secret access key'
-    export s3_bucket='your unique bucket name'
+	production:
+	  access_key_id:  <%= ENV['s3_access_key_id'] %>
+	  secret_access_key:  <%= ENV['s3_secret_access_key'] %>
+	  bucket:  <%= ENV['s3_bucket'] %>
 
 Set the config vars on heroku to get it working there as well.
 
@@ -81,11 +86,11 @@ Set the config vars on heroku to get it working there as well.
 If your non cms domain is www.myapp.com rather than app.com this can be enabled by setting Cms::S3.www_domain_prefix in config/initializers/browsercms.rb to true.
 
 ## using cnames to your S3 bucket
-If you've set up CNAMES in your DNS to point to your bucket, then you can enable the use of that instead of the FQDN ending in amazonaws.com by setting Cms::S3.options[:s3_cname] in your s3.yml file.
+If you've set up CNAMES in your DNS to point to your bucket, then you can enable the use of that instead of the FQDN ending in amazonaws.com by setting Cms::S3.options[:s3_cname] in your bcms_s3.yml file.
 
 ## Important things to note
-1. The s3.yml should be excluded from public repositories (e.g github) since it contains your secret AWS key which should **never** be revealed to the public.   
-**Please note**. This no longer applies since the access keys and buckets are now specified in environmental variables and therefore the s3.yml file now contains just references to these environmental variables.
+1. The bcms_s3.yml should be excluded from public repositories (e.g github) since it contains your secret AWS key which should **never** be revealed to the public.   
+**Please note**. This no longer applies since the access keys and buckets are now specified in environmental variables and therefore the bcms_s3.yml file now contains just references to these environmental variables.
 2. Changing from local storage to S3 storage will require you to re-upload all your files (or copy the tree to s3)
 
 ## Contributors
