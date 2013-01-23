@@ -17,17 +17,17 @@ Gem::Specification.new do |s|
   s.files += Dir["app/**/*"]
   s.files += Dir["config/**/*"]
   s.files += Dir["db/**/*"]
-  s.files += Dir["lib/**/*"] 
+  s.files += Dir["lib/**/*"]
   s.files += Dir["Gemfile", "LICENSE.txt", "COPYRIGHT.txt", "GPL.txt" ]
 
   s.test_files += Dir["test/**/*"]
   s.test_files -= Dir['test/dummy/**/*']
-  
+
   s.homepage = %q{https://github.com/browsermedia/bcms_s3}
   s.require_paths = ["lib"]
   s.rubyforge_project = s.name
 
-  s.add_dependency("aws-sdk", "~> 1.5.0")
+  s.add_dependency("aws-sdk", ">= 1.5.0")
   s.add_dependency("browsercms", "< 3.6.0", ">= 3.5.0.rc1")
 end
 
