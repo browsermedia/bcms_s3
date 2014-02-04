@@ -1,18 +1,12 @@
 require 'cms/data_loader'
-extend Cms::DataLoader
 
 if %w[development test dev local].include?(Rails.env)
   pwd = "cmsadmin"
 else
-  pwd = (0..8).inject("") { |s, i| s << (('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a).rand }
+  pwd = (0..8).inject("") { |s, i| s << (('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a).sample }
 end
 Cms::User.current = create_user(:cmsadmin, :login => "cmsadmin", :first_name => "CMS", :last_name => "Administrator", :email => "cmsadmin@example.com", :password => pwd, :password_confirmation => pwd)
 
-[["Cms::CategoryType", "Categorization"], ["Cms::Category","Categorization"], ["Cms::Tag", "Categorization"],
- ["Cms::HtmlBlock", "Core"], ["Cms::Portlet", "Core"], ["Cms::FileBlock", "Core"], ["Cms::ImageBlock", "Core"]
-].each do |type|
-  create_content_type(type[0].to_sym, :name=>type[0], :group_name=>type[1])
-end
 create_permission(:administrate, :name => "administrate", :full_name => "Administer CMS", :description => "Allows users to administer the CMS, including adding users and groups.")
 create_permission(:edit_content, :name => "edit_content", :full_name => "Edit Content", :description => "Allows users to Add, Edit and Delete both Pages and Blocks. Can Save (but not Publish) and Assign them as well.")
 create_permission(:publish_content, :name => "publish_content", :full_name => "Publish Content", :description => "Allows users to Save and Publish, Hide and Archive both Pages and Blocks.")
@@ -20,6 +14,7 @@ create_permission(:publish_content, :name => "publish_content", :full_name => "P
 create_group_type(:guest_group_type, :name => "Guest", :guest => true)
 create_group_type(:registered_public_user, :name => "Registered Public User")
 create_group_type(:cms_user, :name => "CMS User", :cms_access => true)
+
 group_types(:cms_user).permissions<<permissions(:edit_content)
 group_types(:cms_user).permissions<<permissions(:publish_content)
 

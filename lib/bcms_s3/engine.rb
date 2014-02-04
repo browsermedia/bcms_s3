@@ -6,14 +6,16 @@ module BcmsS3
   class Engine < ::Rails::Engine
     isolate_namespace BcmsS3
 		include Cms::Module
-		
+
     config.before_configuration do
+      puts '=============================================================='
+      puts '=============================================================='
+
       config.cms.attachments.s3_credentials = "#{Rails.root}/config/s3.yml"
       config.cms.attachments.storage = :s3 
     end
     
-		config.to_prepare do
-      Cms::ContentController.send(:include, Cms::S3::ContentController)
+    config.to_prepare do
       Cms::ApplicationController.send(:include, Cms::S3::ApplicationController)
 
       # ensure heroku caching disabled by default
@@ -22,6 +24,8 @@ module BcmsS3
       # function to set domain prefix without url to 'www' is disabled by default
       Cms::S3.www_domain_prefix = false if Cms::S3.www_domain_prefix.nil?
 
-	  end
+    end
+
+
   end
 end
